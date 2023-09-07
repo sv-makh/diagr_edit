@@ -138,7 +138,7 @@ mixin MyCanvasPolicy implements CanvasPolicy, CustomPolicy {
     } else {
       canvasWriter.model.addComponent(
         ComponentData(
-          size: const Size(96, 72),
+          size: const Size(10, 10),
           position:
               canvasReader.state.fromCanvasCoordinates(details.localPosition),
           data: MyComponentData(),

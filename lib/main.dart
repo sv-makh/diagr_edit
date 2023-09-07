@@ -1,5 +1,6 @@
 
 import 'package:diagr_edit/pages/diagram_editor_page.dart';
+import 'package:diagr_edit/pages/ports/diagram_editor_ports.dart';
 import 'package:diagr_edit/pages/my_home_page.dart';
 import 'package:diagr_edit/pages/shape_editor_page.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const MyHomePage(),
         '/diagram_editor': (context) => const DiagramEditorPage(),
         '/shape_editor': (context) => const ShapeEditorPage(),
+        '/diagram_editor_ports': (context) => const DiagramEditorPorts(),
       },
     );
   }

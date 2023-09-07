@@ -11,15 +11,22 @@ class MyHomePage extends StatelessWidget {
         child: Column(children:[
           TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/diagram_editor');
-            },
-            child: const Text('diagram_editor'),
-          ),
-          TextButton(
-            onPressed: () {
               Navigator.pushNamed(context, '/shape_editor');
             },
             child: const Text('shape_editor'),
+          ),
+          Divider(),
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/diagram_editor');
+            },
+            child: const Text('diagram_editor example'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/diagram_editor_ports');
+            },
+            child: const Text('diagram_editor ports'),
           ),
         ]
         ),

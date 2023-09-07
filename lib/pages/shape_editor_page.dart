@@ -57,6 +57,7 @@ class _ShapeEditorPageState extends State<ShapeEditorPage> {
   }
 }
 
+
 // Custom component Data which you can assign to a component to dynamic data property.
 class MyComponentData {
   MyComponentData();

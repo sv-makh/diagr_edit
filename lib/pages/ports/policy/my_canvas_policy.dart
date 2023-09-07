@@ -6,7 +6,7 @@ mixin MyCanvasPolicy implements CanvasPolicy {
   @override
   onCanvasTapUp(TapUpDetails details) {
     canvasWriter.model.hideAllLinkJoints();
-
+    
     
   }
 

@@ -32,5 +32,3 @@ class _DiagramEditorPortsState extends State<DiagramEditorPorts> {
   }
 }
 
-class MyPolicySet extends PolicySet
-    with MyInitPolicy, CanvasControlPolicy, LinkControlPolicy, LinkJointControlPolicy {}

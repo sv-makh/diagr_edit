@@ -4,6 +4,6 @@ import 'package:flutter/material.dart';
 mixin MyInitPolicy implements InitPolicy {
   @override
   initializeDiagramEditor() {
-    //canvasWriter.state.setCanvasColor(Colors.yellow.shade200);
+    //canvasWriter.state.setCanvasColor(Colors.green.shade100);
   }
 }

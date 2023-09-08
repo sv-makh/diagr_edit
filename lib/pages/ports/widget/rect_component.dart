@@ -14,7 +14,7 @@ class RectComponent extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: myCustomData.color,
-        border: Border.all(width: 2, color: Colors.black),
+        border: Border.all(width: 1, color: Colors.grey),
         borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),
     );

@@ -43,7 +43,7 @@ class Port extends StatelessWidget {
   const Port({
     super.key,
     this.color = Colors.white,
-    this.borderColor = Colors.black,
+    this.borderColor = Colors.grey,
   });
 
   @override
@@ -52,7 +52,7 @@ class Port extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(width: 3, color: borderColor),
+        border: Border.all(width: 1, color: borderColor),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:diagr_edit/pages/ports/policy/my_policy_set.dart';
 
-
 class PortSwitch extends StatefulWidget {
   final MyPolicySet policySet;
 

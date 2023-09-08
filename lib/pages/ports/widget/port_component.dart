@@ -59,7 +59,7 @@ class Port extends StatelessWidget {
 }
 
 class PortData {
-  final String type;
+  //final String type;
   final Color color;
   final Size size;
   final Alignment alignmentOnComponent;
@@ -67,7 +67,7 @@ class PortData {
   PortState portState = PortState.shown;
 
   PortData({
-    required this.type,
+    //required this.type,
     required this.color,
     required this.size,
     required this.alignmentOnComponent,

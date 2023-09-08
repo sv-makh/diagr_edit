@@ -7,12 +7,15 @@ mixin MyCanvasPolicy implements CanvasPolicy, CustomPolicy {
   onCanvasTapUp(TapUpDetails details) {
     canvasWriter.model.hideAllLinkJoints();
 
-    if (selectedPortId == null) {
-      addComponentDataWithPorts(
-          canvasReader.state.fromCanvasCoordinates(details.localPosition));
+    if (selectedComponentId != null) {
+      hideComponentHighlight(selectedComponentId);
+    } else {
+      if (selectedPortId == null) {
+        addComponentDataWithPorts(
+            canvasReader.state.fromCanvasCoordinates(details.localPosition));
+      }
     }
-    deselectAllPorts();
-    
-  }
 
+    deselectAllPorts();
+  }
 }

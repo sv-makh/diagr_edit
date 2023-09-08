@@ -14,7 +14,12 @@ class RectComponent extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: myCustomData.color,
-        border: Border.all(width: 1, color: Colors.grey),
+        border: Border.all(
+          width: 1,
+          color: (componentData.data as MyComponentData).isHighlightVisible
+              ? Colors.pinkAccent
+              : Colors.grey,
+        ),
         borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),
     );
@@ -24,6 +29,15 @@ class RectComponent extends StatelessWidget {
 class MyComponentData {
   final Color color;
   List<PortData> portData = [];
+  bool isHighlightVisible = false;
+
+  showHighlight() {
+    isHighlightVisible = true;
+  }
+
+  hideHighlight() {
+    isHighlightVisible = false;
+  }
 
   MyComponentData({
     this.color = Colors.white,

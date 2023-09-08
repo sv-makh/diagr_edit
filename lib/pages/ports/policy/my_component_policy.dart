@@ -17,6 +17,12 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomPolicy {
       if (!connected) {
         selectPort(componentId);
       }
+    } else {
+      bool connected = connectComponents(selectedComponentId, componentId);
+      hideComponentHighlight(selectedComponentId);
+      if (!connected) {
+        highlightComponent(componentId);
+      }
     }
   }
 

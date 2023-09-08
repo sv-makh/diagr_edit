@@ -7,16 +7,21 @@ import '../widget/port_component.dart';
 import '../widget/rect_component.dart';
 
 mixin CustomPolicy implements PolicySet {
-  List<String> componentTypes = [
-    'center',
-    'zero-one',
-    'one_zero',
-    'one-one',
-    'one-two',
-    'two-one',
-    'two-two',
-    'corners',
-  ];
+  String? selectedComponentId;
+
+  highlightComponent(String componentId) {
+    canvasReader.model.getComponent(componentId).data.showHighlight();
+    canvasReader.model.getComponent(componentId).updateComponent();
+    selectedComponentId = componentId;
+  }
+
+  hideComponentHighlight(String? componentId) {
+    if (componentId != null) {
+      canvasReader.model.getComponent(componentId).data.hideHighlight();
+      canvasReader.model.getComponent(componentId).updateComponent();
+      selectedComponentId = null;
+    }
+  }
 
   deleteAllComponents() {
     canvasWriter.model.removeAllComponents();
@@ -40,9 +45,9 @@ mixin CustomPolicy implements PolicySet {
       return false;
     }
 
-    if (port1.data.type != port2.data.type) {
+/*    if (port1.data.type != port2.data.type) {
       return false;
-    }
+    }*/
 
     if (port1.connections
         .any((connection) => (connection.otherComponentId == portId2))) {
@@ -104,9 +109,7 @@ mixin CustomPolicy implements PolicySet {
   }
 
   addComponentDataWithPorts(Offset position) {
-    String type = componentTypes[math.Random().nextInt(componentTypes.length)];
-
-    var componentData = _getComponentData(type, position);
+    var componentData = _getComponentData(position);
     canvasWriter.model.addComponent(componentData);
     int zOrder = canvasWriter.model.moveComponentToTheFront(componentData.id);
     componentData.data.portData.forEach((PortData port) {
@@ -124,81 +127,36 @@ mixin CustomPolicy implements PolicySet {
     });
   }
 
-  ComponentData _getComponentData(String type, Offset position) {
+  ComponentData _getComponentData(Offset position) {
     var portComponent = ComponentData(
-      size: Size(120, 90),
+      size: const Size(120, 90),
       position: position,
       type: 'component',
       data: MyComponentData(
-        color: Colors.white,/*Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
-            .withOpacity(1.0),*/
+        color: Colors.white,
       ),
     );
 
-    switch (type) {
-      case 'center':
-        portComponent.data.portData.add(_getPortData(Alignment.center));
-        break;
-      case 'zero-one':
-        portComponent.data.portData.add(_getPortData(Alignment.centerRight));
-        break;
-      case 'one_zero':
-        portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
-        break;
-      case 'one-one':
-        portComponent.data.portData.add(_getPortData(Alignment.centerRight));
-        portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
-        break;
-      case 'one-two':
-        portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
-        portComponent.data.portData.add(_getPortData(Alignment(1, -0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment(1, 0.5)));
-        break;
-      case 'two-one':
-        portComponent.data.portData.add(_getPortData(Alignment(-1, -0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment(-1, 0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment.centerRight));
-        break;
-      case 'two-two':
-        portComponent.data.portData.add(_getPortData(Alignment(-1, -0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment(-1, 0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment(1, -0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment(1, 0.5)));
-        break;
-      case 'corners':
-        portComponent.data.portData.add(_getPortData(Alignment.topLeft));
-        portComponent.data.portData.add(_getPortData(Alignment.topRight));
-        portComponent.data.portData.add(_getPortData(Alignment.bottomRight));
-        portComponent.data.portData.add(_getPortData(Alignment.bottomLeft));
-        break;
-      default:
-        break;
-    }
+    portComponent.data.portData.add(_getPortData(Alignment.topLeft));
+    portComponent.data.portData.add(_getPortData(Alignment.topRight));
+    portComponent.data.portData.add(_getPortData(Alignment.topCenter));
+    portComponent.data.portData.add(_getPortData(Alignment.bottomCenter));
+    portComponent.data.portData.add(_getPortData(Alignment.bottomRight));
+    portComponent.data.portData.add(_getPortData(Alignment.bottomLeft));
+    portComponent.data.portData.add(_getPortData(Alignment.centerRight));
+    portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
+
     return portComponent;
   }
 
   PortData _getPortData(Alignment alignment) {
-    var portType = ['R', 'G', 'B'][math.Random().nextInt(3)];
-    Color portColor = Colors.red;
-    switch (portType) {
-      case 'R':
-        portColor = Colors.red;
-        break;
-      case 'G':
-        portColor = Colors.green;
-        break;
-      case 'B':
-        portColor = Colors.blue;
-        break;
-    }
+    Color portColor = Colors.white;
     var portData = PortData(
-      type: portType,
       color: portColor,
-      size: const Size(20, 20),
+      size: const Size(15, 15),
       alignmentOnComponent: alignment,
     );
     portData.setPortState(arePortsVisible ? PortState.shown : PortState.hidden);
     return portData;
   }
-
 }

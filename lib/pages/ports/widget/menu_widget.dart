@@ -12,7 +12,7 @@ class MenuWidget extends StatelessWidget {
       itemBuilder: (context) => [
         PopupMenuItem(
           value: 1,
-          child: Text(
+          child: const Text(
             "delete all",
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
           ),
@@ -24,14 +24,14 @@ class MenuWidget extends StatelessWidget {
           value: 2,
           child: Text(
             policySet.arePortsVisible ? 'hide ports' : 'show ports',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
           ),
           onTap: () {
             policySet.switchPortsVisibility();
           },
         ),
       ],
-      icon: Icon(Icons.menu),
+      icon: const Icon(Icons.menu),
     );
   }
 }

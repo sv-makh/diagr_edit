@@ -5,8 +5,20 @@ import 'package:flutter/material.dart';
 
 import '../widget/port_component.dart';
 import '../widget/rect_component.dart';
+import 'package:diagr_edit/pages/ports/widget/my_component_data.dart';
 
 mixin CustomPolicy implements PolicySet {
+  List<String> bodies = [
+    //'rectComponent',
+    'userTaskComponent',
+    'timerComponent',
+    'terminateEndEventComponent',
+    'startEventComponent',
+    'signalIntermediateThrowEventComponent',
+    'textAnnotationComponent',
+    'serviceTaskComponent',
+  ];
+
   String? selectedComponentId;
 
   highlightComponent(String componentId) {
@@ -109,7 +121,9 @@ mixin CustomPolicy implements PolicySet {
   }
 
   addComponentDataWithPorts(Offset position) {
-    var componentData = _getComponentData(position);
+    String type = bodies[math.Random().nextInt(bodies.length)];
+    print(type);
+    var componentData = _getComponentData(position, type);
     canvasWriter.model.addComponent(componentData);
     int zOrder = canvasWriter.model.moveComponentToTheFront(componentData.id);
     componentData.data.portData.forEach((PortData port) {
@@ -127,24 +141,57 @@ mixin CustomPolicy implements PolicySet {
     });
   }
 
-  ComponentData _getComponentData(Offset position) {
+  ComponentData _getComponentData(Offset position, String type) {
+    Size size = const Size(0, 0);
+    switch (type) {
+      case 'timerComponent':
+      case 'terminateEndEventComponent':
+      case 'startEventComponent':
+      case 'signalIntermediateThrowEventComponent':
+        size = const Size(50, 50);
+      case 'userTaskComponent':
+      case 'textAnnotationComponent':
+      case 'serviceTaskComponent':
+        size = const Size(90, 60);
+      case 'rectComponent':
+        size = const Size(120, 90);
+      default:
+        size = const Size(0, 0);
+    }
+
     var portComponent = ComponentData(
-      size: const Size(120, 90),
+      size: size, //const Size(120, 90),
       position: position,
-      type: 'component',
+      type: type,
       data: MyComponentData(
         color: Colors.white,
       ),
     );
 
-    portComponent.data.portData.add(_getPortData(Alignment.topLeft));
-    portComponent.data.portData.add(_getPortData(Alignment.topRight));
-    portComponent.data.portData.add(_getPortData(Alignment.topCenter));
-    portComponent.data.portData.add(_getPortData(Alignment.bottomCenter));
-    portComponent.data.portData.add(_getPortData(Alignment.bottomRight));
-    portComponent.data.portData.add(_getPortData(Alignment.bottomLeft));
-    portComponent.data.portData.add(_getPortData(Alignment.centerRight));
-    portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
+    switch (type) {
+      case 'timerComponent':
+      case 'terminateEndEventComponent':
+      case 'startEventComponent':
+      case 'signalIntermediateThrowEventComponent':
+        portComponent.data.portData.add(_getPortData(Alignment.topCenter));
+        portComponent.data.portData.add(_getPortData(Alignment.bottomCenter));
+        portComponent.data.portData.add(_getPortData(Alignment.centerRight));
+        portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
+
+      case 'userTaskComponent':
+      case 'textAnnotationComponent':
+      case 'serviceTaskComponent':
+      //case 'rectComponent':
+      default:
+        portComponent.data.portData.add(_getPortData(Alignment.topLeft));
+        portComponent.data.portData.add(_getPortData(Alignment.topRight));
+        portComponent.data.portData.add(_getPortData(Alignment.topCenter));
+        portComponent.data.portData.add(_getPortData(Alignment.bottomCenter));
+        portComponent.data.portData.add(_getPortData(Alignment.bottomRight));
+        portComponent.data.portData.add(_getPortData(Alignment.bottomLeft));
+        portComponent.data.portData.add(_getPortData(Alignment.centerRight));
+        portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
+    }
 
     return portComponent;
   }

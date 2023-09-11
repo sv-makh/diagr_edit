@@ -1,6 +1,7 @@
 import 'package:diagr_edit/pages/ports/widget/port_component.dart';
 import 'package:flutter/material.dart';
 import 'package:diagram_editor/diagram_editor.dart';
+import 'package:diagr_edit/pages/ports/widget/my_component_data.dart';
 
 class RectComponent extends StatelessWidget {
   final ComponentData componentData;
@@ -26,7 +27,7 @@ class RectComponent extends StatelessWidget {
   }
 }
 
-class MyComponentData {
+/*class MyComponentData {
   final Color color;
   List<PortData> portData = [];
   bool isHighlightVisible = false;
@@ -42,4 +43,4 @@ class MyComponentData {
   MyComponentData({
     this.color = Colors.white,
   });
-}
+}*/

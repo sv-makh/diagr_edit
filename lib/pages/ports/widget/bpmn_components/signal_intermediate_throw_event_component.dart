@@ -1,7 +1,9 @@
 import 'package:diagram_editor/diagram_editor.dart';
 import 'package:flutter/material.dart';
-import '../../common_elements/base_component_body.dart';
-import '../../../widgets_with_options/element_with_options_widget.dart';
+/*import '../../common_elements/base_component_body.dart';
+import '../../../widgets_with_options/element_with_options_widget.dart';*/
+import '../base_component_body.dart';
+import '../element_with_options_widget.dart';
 
 class SignalIntermediateThrowEventComponent extends StatelessWidget {
   static const String name = 'signalIntermediateThrowEvent';
@@ -18,7 +20,7 @@ class SignalIntermediateThrowEventComponent extends StatelessWidget {
       componentData: componentData,
       child: BaseComponentBody(
         componentData: componentData,
-        hidedText: true,
+        //hidedText: true,
         componentPainter: SignalIntermediateThrowEventPainter(
           color: componentData.data.color,
           borderColor: componentData.data.borderColor,

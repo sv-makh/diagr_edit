@@ -1,10 +1,12 @@
 import 'package:diagram_editor/diagram_editor.dart';
-import 'package:diagram_editor_apps/core/diagram_editor_core/extensions/string_null_or_empty_extension.dart';
+//import 'package:diagram_editor_apps/core/diagram_editor_core/extensions/string_null_or_empty_extension.dart';
 import 'package:flutter/material.dart';
-import '../../../../../../../../core/diagram_editor_core/ui/app_colors.dart';
+/*import '../../../../../../../../core/diagram_editor_core/ui/app_colors.dart';
 import '../../../../../data/models/component_data/component_meta_data.dart';
 import '../../common_elements/base_component_body.dart';
-import '../../../widgets_with_options/element_with_options_widget.dart';
+import '../../../widgets_with_options/element_with_options_widget.dart';*/
+import '../base_component_body.dart';
+import '../element_with_options_widget.dart';
 
 class ServiceTaskComponent extends StatelessWidget {
   static const String name = 'serviceTask';
@@ -23,7 +25,7 @@ class ServiceTaskComponent extends StatelessWidget {
         children: [
           BaseComponentBody(
             componentData: componentData,
-            hidedText: false,
+            //hidedText: false,
             componentPainter: ServiceTaskPainter(
               color: componentData.data.color,
               borderColor: componentData.data.borderColor,
@@ -61,7 +63,7 @@ class ServiceTaskPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    _checkComponentColorsConditions(_componentData);
+    //_checkComponentColorsConditions(_componentData);
     var paint = Paint()
       ..color = _color
       ..style = PaintingStyle.fill;
@@ -107,11 +109,11 @@ class ServiceTaskPainter extends CustomPainter {
     return path;
   }
 
-  void _checkComponentColorsConditions(ComponentData componentData) {
+/*  void _checkComponentColorsConditions(ComponentData componentData) {
     if (!(componentData.data as ComponentMetaData)
         .metaName
         .isNotNullOrEmpty()) {
       _color = ApplicationColors.darkGrey;
     }
-  }
+  }*/
 }

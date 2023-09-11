@@ -5,11 +5,11 @@ import '../../../widgets_with_options/element_with_options_widget.dart';*/
 import '../common_components/base_component_body.dart';
 import '../common_components/element_with_options_widget.dart';
 
-class SignalIntermediateThrowEventComponent extends StatelessWidget {
-  static const String name = 'signalIntermediateThrowEvent';
+class SignalIntermediateCatchEventComponent extends StatelessWidget {
+  static const String name = 'signalIntermediateCatchEvent';
   final ComponentData componentData;
 
-  const SignalIntermediateThrowEventComponent({
+  const SignalIntermediateCatchEventComponent({
     Key? key,
     required this.componentData,
   }) : super(key: key);
@@ -21,7 +21,7 @@ class SignalIntermediateThrowEventComponent extends StatelessWidget {
       child: BaseComponentBody(
         componentData: componentData,
         hidedText: true,
-        componentPainter: SignalIntermediateThrowEventPainter(
+        componentPainter: SignalIntermediateCatchEventPainter(
           color: componentData.data.color,
           borderColor: componentData.data.borderColor,
           borderWidth: componentData.data.borderWidth,
@@ -31,13 +31,13 @@ class SignalIntermediateThrowEventComponent extends StatelessWidget {
   }
 }
 
-class SignalIntermediateThrowEventPainter extends CustomPainter {
+class SignalIntermediateCatchEventPainter extends CustomPainter {
   final Color _color;
   final Color _borderColor;
   final double _borderWidth;
   late Size _componentSize;
 
-  SignalIntermediateThrowEventPainter({
+  SignalIntermediateCatchEventPainter({
     Color? color,
     Color? borderColor,
     double? borderWidth,
@@ -72,7 +72,11 @@ class SignalIntermediateThrowEventPainter extends CustomPainter {
     triangle.lineTo(size.width * 0.27, size.height * 0.67);
     triangle.lineTo(size.width * 0.73, size.height * 0.67);
     triangle.close();
-    canvas.drawPath(triangle, Paint());
+    canvas.drawPath(
+        triangle,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5);
   }
 
   @override

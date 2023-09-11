@@ -5,11 +5,11 @@ import '../../../widgets_with_options/element_with_options_widget.dart';*/
 import '../common_components/base_component_body.dart';
 import '../common_components/element_with_options_widget.dart';
 
-class SignalIntermediateThrowEventComponent extends StatelessWidget {
-  static const String name = 'signalIntermediateThrowEvent';
+class EndEventComponent extends StatelessWidget {
+  static const String name = 'endEvent';
   final ComponentData componentData;
 
-  const SignalIntermediateThrowEventComponent({
+  const EndEventComponent({
     Key? key,
     required this.componentData,
   }) : super(key: key);
@@ -21,7 +21,7 @@ class SignalIntermediateThrowEventComponent extends StatelessWidget {
       child: BaseComponentBody(
         componentData: componentData,
         hidedText: true,
-        componentPainter: SignalIntermediateThrowEventPainter(
+        componentPainter: EndEventPainter(
           color: componentData.data.color,
           borderColor: componentData.data.borderColor,
           borderWidth: componentData.data.borderWidth,
@@ -31,23 +31,23 @@ class SignalIntermediateThrowEventComponent extends StatelessWidget {
   }
 }
 
-class SignalIntermediateThrowEventPainter extends CustomPainter {
+class EndEventPainter extends CustomPainter {
   final Color _color;
   final Color _borderColor;
   final double _borderWidth;
   late Size _componentSize;
 
-  SignalIntermediateThrowEventPainter({
+  EndEventPainter({
     Color? color,
     Color? borderColor,
     double? borderWidth,
   })  : _color = color ?? Colors.white,
         _borderColor = borderColor ?? Colors.black,
-        _borderWidth = 2.0;
+        _borderWidth = 6.0;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
+    var paint = Paint()
       ..color = _color
       ..style = PaintingStyle.fill;
     _componentSize = size;
@@ -64,15 +64,6 @@ class SignalIntermediateThrowEventPainter extends CustomPainter {
 
       canvas.drawPath(path, paint);
     }
-    canvas.drawCircle(
-        Offset(size.width / 2, size.height / 2), (size.width / 2) * 0.8, paint);
-
-    final triangle = Path();
-    triangle.moveTo(size.width / 2, size.height * 0.25);
-    triangle.lineTo(size.width * 0.27, size.height * 0.67);
-    triangle.lineTo(size.width * 0.73, size.height * 0.67);
-    triangle.close();
-    canvas.drawPath(triangle, Paint());
   }
 
   @override

@@ -5,11 +5,11 @@ import '../../../widgets_with_options/element_with_options_widget.dart';*/
 import '../common_components/base_component_body.dart';
 import '../common_components/element_with_options_widget.dart';
 
-class SignalIntermediateThrowEventComponent extends StatelessWidget {
-  static const String name = 'signalIntermediateThrowEvent';
+class MessageIntermediateThrowComponent extends StatelessWidget {
+  static const String name = 'messageIntermediateThrowEvent';
   final ComponentData componentData;
 
-  const SignalIntermediateThrowEventComponent({
+  const MessageIntermediateThrowComponent({
     Key? key,
     required this.componentData,
   }) : super(key: key);
@@ -18,26 +18,35 @@ class SignalIntermediateThrowEventComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElementWithOptionsWidget(
       componentData: componentData,
-      child: BaseComponentBody(
-        componentData: componentData,
-        hidedText: true,
-        componentPainter: SignalIntermediateThrowEventPainter(
-          color: componentData.data.color,
-          borderColor: componentData.data.borderColor,
-          borderWidth: componentData.data.borderWidth,
-        ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          BaseComponentBody(
+            componentData: componentData,
+            hidedText: true,
+            componentPainter: MessageIntermediateThrowEventPainter(
+              color: componentData.data.color,
+              borderColor: componentData.data.borderColor,
+              borderWidth: componentData.data.borderWidth,
+            ),
+          ),
+          const Icon(
+            Icons.local_post_office,
+            size: 28,
+          )
+        ],
       ),
     );
   }
 }
 
-class SignalIntermediateThrowEventPainter extends CustomPainter {
+class MessageIntermediateThrowEventPainter extends CustomPainter {
   final Color _color;
   final Color _borderColor;
   final double _borderWidth;
   late Size _componentSize;
 
-  SignalIntermediateThrowEventPainter({
+  MessageIntermediateThrowEventPainter({
     Color? color,
     Color? borderColor,
     double? borderWidth,
@@ -64,15 +73,9 @@ class SignalIntermediateThrowEventPainter extends CustomPainter {
 
       canvas.drawPath(path, paint);
     }
+
     canvas.drawCircle(
         Offset(size.width / 2, size.height / 2), (size.width / 2) * 0.8, paint);
-
-    final triangle = Path();
-    triangle.moveTo(size.width / 2, size.height * 0.25);
-    triangle.lineTo(size.width * 0.27, size.height * 0.67);
-    triangle.lineTo(size.width * 0.73, size.height * 0.67);
-    triangle.close();
-    canvas.drawPath(triangle, Paint());
   }
 
   @override

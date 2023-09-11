@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../widget/port_component.dart';
 import '../widget/rect_component.dart';
-import 'package:diagr_edit/pages/ports/widget/my_component_data.dart';
+import 'package:diagr_edit/pages/ports/widget/common_components/my_component_data.dart';
 
 mixin CustomPolicy implements PolicySet {
   List<String> bodies = [
@@ -17,6 +17,17 @@ mixin CustomPolicy implements PolicySet {
     'signalIntermediateThrowEventComponent',
     'textAnnotationComponent',
     'serviceTaskComponent',
+    'signalIntermediateCatchEventComponent',
+    'parallelGatewayComponent',
+    'messageIntermediateThrowComponent',
+    'messageIntermediateCatchEventComponent',
+    'linkIntermediateThrowEventComponent',
+    'exclusiveGatewayComponent',
+    'errorEndEventComponent',
+    'errorBoundaryEventComponent',
+    'endEventComponent',
+    'collapsedSubprocessComponent',
+    'businessRuleTaskComponent',
   ];
 
   String? selectedComponentId;
@@ -148,10 +159,21 @@ mixin CustomPolicy implements PolicySet {
       case 'terminateEndEventComponent':
       case 'startEventComponent':
       case 'signalIntermediateThrowEventComponent':
+      case 'parallelGatewayComponent':
+      case 'linkIntermediateThrowEventComponent':
+      case 'exclusiveGatewayComponent':
+      case 'errorEndEventComponent':
+      case 'errorBoundaryEventComponent':
+      case 'endEventComponent':
+      case 'messageIntermediateThrowComponent':
+      case 'messageIntermediateCatchEventComponent':
+      case 'signalIntermediateCatchEventComponent':
         size = const Size(50, 50);
       case 'userTaskComponent':
       case 'textAnnotationComponent':
       case 'serviceTaskComponent':
+      case 'collapsedSubprocessComponent':
+      case 'businessRuleTaskComponent':
         size = const Size(90, 60);
       case 'rectComponent':
         size = const Size(120, 90);
@@ -173,6 +195,15 @@ mixin CustomPolicy implements PolicySet {
       case 'terminateEndEventComponent':
       case 'startEventComponent':
       case 'signalIntermediateThrowEventComponent':
+      case 'parallelGatewayComponent':
+      case 'linkIntermediateThrowEventComponent':
+      case 'exclusiveGatewayComponent':
+      case 'errorEndEventComponent':
+      case 'errorBoundaryEventComponent':
+      case 'endEventComponent':
+      case 'messageIntermediateThrowComponent':
+      case 'messageIntermediateCatchEventComponent':
+      case 'signalIntermediateCatchEventComponent':
         portComponent.data.portData.add(_getPortData(Alignment.topCenter));
         portComponent.data.portData.add(_getPortData(Alignment.bottomCenter));
         portComponent.data.portData.add(_getPortData(Alignment.centerRight));
@@ -181,6 +212,8 @@ mixin CustomPolicy implements PolicySet {
       case 'userTaskComponent':
       case 'textAnnotationComponent':
       case 'serviceTaskComponent':
+      case 'collapsedSubprocessComponent':
+      case 'businessRuleTaskComponent':
       //case 'rectComponent':
       default:
         portComponent.data.portData.add(_getPortData(Alignment.topLeft));

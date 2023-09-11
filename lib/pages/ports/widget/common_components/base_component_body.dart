@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:diagram_editor/diagram_editor.dart';
-import 'package:diagr_edit/pages/ports/widget/my_component_data.dart';
+import 'package:diagr_edit/pages/ports/widget/common_components/my_component_data.dart';
 
 class BaseComponentBody extends StatelessWidget {
   final ComponentData componentData;
   final CustomPainter componentPainter;
+  final bool hidedText;
 
   const BaseComponentBody({
     Key? key,
     required this.componentData,
     required this.componentPainter,
+    required this.hidedText,
   }) : super(key: key);
 
   @override

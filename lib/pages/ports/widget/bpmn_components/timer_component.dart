@@ -2,8 +2,8 @@ import 'package:diagram_editor/diagram_editor.dart';
 import 'package:flutter/material.dart';
 /*import '../../common_elements/base_component_body.dart';
 import '../../../widgets_with_options/element_with_options_widget.dart';*/
-import '../base_component_body.dart';
-import '../element_with_options_widget.dart';
+import '../common_components/base_component_body.dart';
+import '../common_components/element_with_options_widget.dart';
 
 class TimerComponent extends StatelessWidget {
   static const String name = 'timer';
@@ -23,7 +23,7 @@ class TimerComponent extends StatelessWidget {
         children: [
           BaseComponentBody(
             componentData: componentData,
-            //hidedText: true,
+            hidedText: true,
             componentPainter: TimerPainter(
               color: componentData.data.color,
               borderColor: componentData.data.borderColor,

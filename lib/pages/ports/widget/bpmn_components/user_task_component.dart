@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import '../../../../../data/models/component_data/component_meta_data.dart';
 import '../../common_elements/base_component_body.dart';
 import '../../../widgets_with_options/element_with_options_widget.dart';*/
-import '../base_component_body.dart';
-import '../element_with_options_widget.dart';
+import '../common_components/base_component_body.dart';
+import '../common_components/element_with_options_widget.dart';
 
 class UserTaskComponent extends StatelessWidget {
   static const String name = 'userTask';
@@ -25,7 +25,7 @@ class UserTaskComponent extends StatelessWidget {
         children: [
           BaseComponentBody(
             componentData: componentData,
-            //hidedText: false,
+            hidedText: false,
             componentPainter: UserTaskPainter(
               color: componentData.data.color,
               borderColor: componentData.data.borderColor,

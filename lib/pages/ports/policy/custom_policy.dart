@@ -8,6 +8,11 @@ import '../widget/rect_component.dart';
 import 'package:diagr_edit/pages/ports/widget/common_components/my_component_data.dart';
 
 mixin CustomPolicy implements PolicySet {
+  final double _circleDiameter = 50;
+  final double _rectWidth = 90;
+  final double _rectHeight = 60;
+  final double _circlePoint = math.sqrt(0.5);
+
   List<String> bodies = [
     //'rectComponent',
     'userTaskComponent',
@@ -168,15 +173,15 @@ mixin CustomPolicy implements PolicySet {
       case 'messageIntermediateThrowComponent':
       case 'messageIntermediateCatchEventComponent':
       case 'signalIntermediateCatchEventComponent':
-        size = const Size(50, 50);
+        size = Size(_circleDiameter, _circleDiameter);
       case 'userTaskComponent':
       case 'textAnnotationComponent':
       case 'serviceTaskComponent':
       case 'collapsedSubprocessComponent':
       case 'businessRuleTaskComponent':
-        size = const Size(90, 60);
-      case 'rectComponent':
-        size = const Size(120, 90);
+        size = Size(_rectWidth, _rectHeight);
+/*      case 'rectComponent':
+        size = const Size(120, 90);*/
       default:
         size = const Size(0, 0);
     }
@@ -190,25 +195,37 @@ mixin CustomPolicy implements PolicySet {
       ),
     );
 
+    portComponent.data.portData.add(_getPortData(Alignment.topCenter));
+    portComponent.data.portData.add(_getPortData(Alignment.bottomCenter));
+    portComponent.data.portData.add(_getPortData(Alignment.centerRight));
+    portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
+
     switch (type) {
       case 'timerComponent':
       case 'terminateEndEventComponent':
       case 'startEventComponent':
       case 'signalIntermediateThrowEventComponent':
-      case 'parallelGatewayComponent':
       case 'linkIntermediateThrowEventComponent':
-      case 'exclusiveGatewayComponent':
       case 'errorEndEventComponent':
       case 'errorBoundaryEventComponent':
       case 'endEventComponent':
       case 'messageIntermediateThrowComponent':
       case 'messageIntermediateCatchEventComponent':
       case 'signalIntermediateCatchEventComponent':
-        portComponent.data.portData.add(_getPortData(Alignment.topCenter));
-        portComponent.data.portData.add(_getPortData(Alignment.bottomCenter));
-        portComponent.data.portData.add(_getPortData(Alignment.centerRight));
-        portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
-
+        portComponent.data.portData
+            .add(_getPortData(Alignment(_circlePoint, _circlePoint)));
+        portComponent.data.portData
+            .add(_getPortData(Alignment(-_circlePoint, -_circlePoint)));
+        portComponent.data.portData
+            .add(_getPortData(Alignment(-_circlePoint, _circlePoint)));
+        portComponent.data.portData
+            .add(_getPortData(Alignment(_circlePoint, -_circlePoint)));
+      case 'parallelGatewayComponent':
+      case 'exclusiveGatewayComponent':
+        portComponent.data.portData.add(_getPortData(Alignment(0.5, 0.5)));
+        portComponent.data.portData.add(_getPortData(Alignment(-0.5, -0.5)));
+        portComponent.data.portData.add(_getPortData(Alignment(-0.5, 0.5)));
+        portComponent.data.portData.add(_getPortData(Alignment(0.5, -0.5)));
       case 'userTaskComponent':
       case 'textAnnotationComponent':
       case 'serviceTaskComponent':
@@ -218,12 +235,8 @@ mixin CustomPolicy implements PolicySet {
       default:
         portComponent.data.portData.add(_getPortData(Alignment.topLeft));
         portComponent.data.portData.add(_getPortData(Alignment.topRight));
-        portComponent.data.portData.add(_getPortData(Alignment.topCenter));
-        portComponent.data.portData.add(_getPortData(Alignment.bottomCenter));
         portComponent.data.portData.add(_getPortData(Alignment.bottomRight));
         portComponent.data.portData.add(_getPortData(Alignment.bottomLeft));
-        portComponent.data.portData.add(_getPortData(Alignment.centerRight));
-        portComponent.data.portData.add(_getPortData(Alignment.centerLeft));
     }
 
     return portComponent;
@@ -233,7 +246,7 @@ mixin CustomPolicy implements PolicySet {
     Color portColor = Colors.white;
     var portData = PortData(
       color: portColor,
-      size: const Size(15, 15),
+      size: const Size(10, 10),
       alignmentOnComponent: alignment,
     );
     portData.setPortState(arePortsVisible ? PortState.shown : PortState.hidden);

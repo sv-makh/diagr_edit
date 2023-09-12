@@ -7,11 +7,14 @@ import '../widget/port_component.dart';
 import '../widget/rect_component.dart';
 import 'package:diagr_edit/pages/ports/widget/common_components/my_component_data.dart';
 
-mixin CustomPolicy implements PolicySet {
+mixin CustomStatePolicy implements PolicySet {
   final double _circleDiameter = 50;
   final double _rectWidth = 90;
   final double _rectHeight = 60;
   final double _circlePoint = math.sqrt(0.5);
+
+  String? selectedLinkId;
+  Offset tapLinkPosition = Offset.zero;
 
   List<String> bodies = [
     //'rectComponent',
@@ -138,7 +141,7 @@ mixin CustomPolicy implements PolicySet {
 
   addComponentDataWithPorts(Offset position) {
     String type = bodies[math.Random().nextInt(bodies.length)];
-    print(type);
+    //print(type);
     var componentData = _getComponentData(position, type);
     canvasWriter.model.addComponent(componentData);
     int zOrder = canvasWriter.model.moveComponentToTheFront(componentData.id);
@@ -222,10 +225,10 @@ mixin CustomPolicy implements PolicySet {
             .add(_getPortData(Alignment(_circlePoint, -_circlePoint)));
       case 'parallelGatewayComponent':
       case 'exclusiveGatewayComponent':
-        portComponent.data.portData.add(_getPortData(Alignment(0.5, 0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment(-0.5, -0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment(-0.5, 0.5)));
-        portComponent.data.portData.add(_getPortData(Alignment(0.5, -0.5)));
+        portComponent.data.portData.add(_getPortData(const Alignment(0.5, 0.5)));
+        portComponent.data.portData.add(_getPortData(const Alignment(-0.5, -0.5)));
+        portComponent.data.portData.add(_getPortData(const Alignment(-0.5, 0.5)));
+        portComponent.data.portData.add(_getPortData(const Alignment(0.5, -0.5)));
       case 'userTaskComponent':
       case 'textAnnotationComponent':
       case 'serviceTaskComponent':
@@ -251,5 +254,14 @@ mixin CustomPolicy implements PolicySet {
     );
     portData.setPortState(arePortsVisible ? PortState.shown : PortState.hidden);
     return portData;
+  }
+
+  showLinkOption(String linkId, Offset position) {
+    selectedLinkId = linkId;
+    tapLinkPosition = position;
+  }
+
+  hideLinkOption() {
+    selectedLinkId = null;
   }
 }

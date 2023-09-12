@@ -1,8 +1,8 @@
-import 'package:diagr_edit/pages/ports/policy/custom_policy.dart';
+import 'package:diagr_edit/pages/ports/policy/custom_state_policy.dart';
 import 'package:diagram_editor/diagram_editor.dart';
 import 'package:flutter/material.dart';
 
-mixin MyComponentPolicy implements ComponentPolicy, CustomPolicy {
+mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
   Offset? lastFocalPoint;
 
   @override
@@ -60,7 +60,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomPolicy {
     if (!canConnectThesePorts(sourceComponentId, targetComponentId)) {
       return false;
     } else {
-      canvasWriter.model.connectTwoComponents(
+      String linkId = canvasWriter.model.connectTwoComponents(
         sourceComponentId: sourceComponentId!,
         targetComponentId: targetComponentId!,
         linkStyle: LinkStyle(
@@ -68,6 +68,18 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomPolicy {
           lineWidth: 1.5,
         ),
       );
+
+      int jointIndex = 1;
+      Offset sc = canvasReader.model.getComponent(sourceComponentId).position;
+      Offset tc = canvasReader.model.getComponent(targetComponentId).position;
+      print('source ${sc.dx} , ${sc.dy}');
+      print('target ${tc.dx} , ${tc.dy}');
+      print('target/2+source/2 ${(tc.dx+sc.dx)/2} , ${(tc.dy+sc.dy)/2}');
+      Offset middle = Offset((tc.dx+sc.dx)/2 , (tc.dy+sc.dy)/2);
+      canvasWriter.model.insertLinkMiddlePoint(linkId, middle, jointIndex);
+
+      Offset newJointPosition = Offset(sc.dx, tc.dy);
+      canvasWriter.model.setLinkMiddlePointPosition(linkId, newJointPosition, jointIndex);
 
       return true;
     }

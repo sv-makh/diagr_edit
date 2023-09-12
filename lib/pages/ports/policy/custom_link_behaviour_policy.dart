@@ -7,6 +7,7 @@ import 'custom_state_policy.dart';
 
 mixin CustomLinkBehaviourPolicy implements PolicySet, CustomStatePolicy {
   void breakLine(String linkId) {
+    print('breakLine');
     final linkData = canvasReader.model.getLink(linkId);
     final sourceComponentPosition =
         canvasReader.model.getComponent(linkData.sourceComponentId).position;

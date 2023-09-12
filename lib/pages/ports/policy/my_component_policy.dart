@@ -58,17 +58,23 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
           .moveComponentWithChildren(component.parentId!, positionDelta);
       connectionsToRebuild.addAll(canvasReader.model.getComponent(component.parentId!).connections);
     }
-
     int jointIndex = 1;
     for (var connection in connectionsToRebuild) {
       String linkId = connection.connectionId;
 
-      String scId = canvasReader.model.getLink(linkId).sourceComponentId;
+/*      String scId = canvasReader.model.getLink(linkId).sourceComponentId;
       Offset sc = canvasReader.model.getComponent(scId).position;
       String tcId = canvasReader.model.getLink(linkId).targetComponentId;
       Offset tc = canvasReader.model.getComponent(tcId).position;
 
-      Offset newJointPosition = Offset(sc.dx + portSize/2, tc.dy + portSize/2);
+      Offset newJointPosition = Offset(sc.dx + portSize/2, tc.dy + portSize/2);*/
+
+      List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
+      Offset prevPoint = linkPoints[jointIndex - 1];
+      Offset nextPoint = linkPoints[jointIndex + 1];
+      Offset newPoint = linkPoints[jointIndex];
+      Offset newJointPosition = Offset(prevPoint.dx, nextPoint.dy);
+
       canvasWriter.model.setLinkMiddlePointPosition(linkId, newJointPosition, jointIndex);
     }
 

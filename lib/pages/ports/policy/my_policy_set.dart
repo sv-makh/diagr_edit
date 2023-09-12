@@ -6,6 +6,7 @@ import 'package:diagram_editor/diagram_editor.dart';
 import 'package:diagr_edit/pages/ports/policy/my_init_policy.dart';
 
 import 'custom_link_behaviour_policy.dart';
+import 'my_link_control_policy.dart';
 import 'my_link_joint_control_policy.dart';
 
 class MyPolicySet extends PolicySet
@@ -19,5 +20,6 @@ class MyPolicySet extends PolicySet
         LinkControlPolicy,
         LinkJointControlPolicy,
         //CustomLinkBehaviourPolicy
-        MyLinkJointControlPolicy
+        MyLinkJointControlPolicy,
+        MyLinkControlPolicy
 {}

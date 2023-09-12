@@ -13,6 +13,8 @@ mixin CustomStatePolicy implements PolicySet {
   final double _rectHeight = 60;
   final double _circlePoint = math.sqrt(0.5);
 
+  double portSize = 10;
+
   String? selectedLinkId;
   Offset tapLinkPosition = Offset.zero;
 
@@ -183,8 +185,8 @@ mixin CustomStatePolicy implements PolicySet {
       case 'collapsedSubprocessComponent':
       case 'businessRuleTaskComponent':
         size = Size(_rectWidth, _rectHeight);
-/*      case 'rectComponent':
-        size = const Size(120, 90);*/
+      case 'rectComponent':
+        size = const Size(120, 90);
       default:
         size = const Size(0, 0);
     }
@@ -234,7 +236,7 @@ mixin CustomStatePolicy implements PolicySet {
       case 'serviceTaskComponent':
       case 'collapsedSubprocessComponent':
       case 'businessRuleTaskComponent':
-      //case 'rectComponent':
+      case 'rectComponent':
       default:
         portComponent.data.portData.add(_getPortData(Alignment.topLeft));
         portComponent.data.portData.add(_getPortData(Alignment.topRight));
@@ -249,7 +251,7 @@ mixin CustomStatePolicy implements PolicySet {
     Color portColor = Colors.white;
     var portData = PortData(
       color: portColor,
-      size: const Size(10, 10),
+      size: Size(portSize, portSize),
       alignmentOnComponent: alignment,
     );
     portData.setPortState(arePortsVisible ? PortState.shown : PortState.hidden);

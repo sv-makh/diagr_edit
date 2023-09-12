@@ -26,12 +26,12 @@ mixin MyComponentDesignPolicy implements ComponentDesignPolicy {
   @override
   Widget showComponentBody(ComponentData componentData) {
     switch (componentData.type) {
+      case 'rectComponent':
+        return RectComponent(componentData: componentData);
       case 'timerComponent':
         return TimerComponent(componentData: componentData);
       case 'userTaskComponent':
         return UserTaskComponent(componentData: componentData);
-      case 'rectComponent':
-        return RectComponent(componentData: componentData);
       case 'terminateEndEventComponent':
         return TerminateEndEventComponent(componentData: componentData);
       case 'startEventComponent':

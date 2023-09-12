@@ -57,6 +57,7 @@ mixin CustomStatePolicy implements PolicySet {
   }
 
   deleteAllComponents() {
+    canvasWriter.model.removeAllLinks();
     canvasWriter.model.removeAllComponents();
   }
 

@@ -13,7 +13,7 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
   onLinkJointLongPress(int jointIndex, String linkId) {
     canvasWriter.model.removeLinkMiddlePoint(linkId, jointIndex);
     canvasWriter.model.updateLink(linkId);
-    print('onLinkJointLongPress');
+    //print('onLinkJointLongPress');
 
     hideLinkOption();
   }
@@ -24,7 +24,7 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
     canvasWriter.model.setLinkMiddlePointPosition(
         linkId, details.localFocalPoint, jointIndex);
     canvasWriter.model.updateLink(linkId);
-    print('onLinkJointScaleUpdate');
+    //print('onLinkJointScaleUpdate');
     rightAngleZoneStumble(jointIndex, linkId, details.localFocalPoint);
 
     hideLinkOption();

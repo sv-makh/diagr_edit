@@ -15,6 +15,8 @@ mixin MyLinkControlPolicy
   }
 
   var _segmentIndex;
+  bool _segmentVerticalMove = false;
+  bool _segmentHorisontalMove = false;
 
   @override
   onLinkScaleStart(String linkId, ScaleStartDetails details) {
@@ -23,9 +25,30 @@ mixin MyLinkControlPolicy
     _segmentIndex = canvasReader.model
         .determineLinkSegmentIndex(linkId, details.localFocalPoint);
     if (_segmentIndex != null) {
+      LinkData linkData = canvasReader.model.getLink(linkId);
+      List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
+
+      if ((_segmentIndex >= 2) && (linkPoints.length - _segmentIndex >= 2)) {
+        if (linkPoints[_segmentIndex - 1].dy == linkPoints[_segmentIndex].dy) {
+          if ((linkPoints[_segmentIndex - 2].dx == linkPoints[_segmentIndex - 1].dx) &&
+              (linkPoints[_segmentIndex].dx == linkPoints[_segmentIndex + 1].dx)) {
+            _segmentVerticalMove = true;
+            print('DY RECT');
+          }
+        } else if (linkPoints[_segmentIndex - 1].dx == linkPoints[_segmentIndex].dx) {
+          if ((linkPoints[_segmentIndex - 2].dy == linkPoints[_segmentIndex - 1].dy) &&
+              (linkPoints[_segmentIndex].dy == linkPoints[_segmentIndex + 1].dy)) {
+            _segmentHorisontalMove = true;
+            print('DX RECT');
+          }
+        }
+        print('RECT');
+      }
+
+      if (!_segmentVerticalMove && !_segmentHorisontalMove) {
       canvasWriter.model.insertLinkMiddlePoint(
           linkId, details.localFocalPoint, _segmentIndex);
-      canvasWriter.model.updateLink(linkId);
+      canvasWriter.model.updateLink(linkId);}
     }
     print('onLinkScaleStart');
   }
@@ -33,13 +56,32 @@ mixin MyLinkControlPolicy
   @override
   onLinkScaleUpdate(String linkId, ScaleUpdateDetails details) {
     if (_segmentIndex != null) {
+
+      if (!_segmentVerticalMove && !_segmentHorisontalMove) {
       canvasWriter.model.setLinkMiddlePointPosition(
           linkId, details.localFocalPoint, _segmentIndex);
       canvasWriter.model.updateLink(linkId);
 
       rightAngleZoneStumble(_segmentIndex, linkId, details.localFocalPoint);
+      } else {
+        List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
+        Offset segmentStart = Offset(0, 0);
+        Offset segmentEnd = Offset(0, 0);
+        if (_segmentVerticalMove) {
+          segmentStart = Offset(linkPoints[_segmentIndex - 1].dx, details.localFocalPoint.dy);
+          segmentEnd = Offset(linkPoints[_segmentIndex].dx, details.localFocalPoint.dy);
+        } else if (_segmentHorisontalMove) {
+          segmentStart = Offset(details.localFocalPoint.dx, linkPoints[_segmentIndex - 1].dy);
+          segmentEnd = Offset(details.localFocalPoint.dx, linkPoints[_segmentIndex].dy);
+        }
+        canvasWriter.model.setLinkMiddlePointPosition(
+            linkId, segmentStart, _segmentIndex - 1);
+        canvasWriter.model.setLinkMiddlePointPosition(
+            linkId, segmentEnd, _segmentIndex);
+        canvasWriter.model.updateLink(linkId);
+      }
     }
-    print('onLinkScaleUpdate');
+    //print('onLinkScaleUpdate');
   }
 
   @override
@@ -47,5 +89,7 @@ mixin MyLinkControlPolicy
     if (_segmentIndex != null) {
       rightAngleZoneUpdate(_segmentIndex, linkId);
     }
+    _segmentHorisontalMove = false;
+    _segmentVerticalMove = false;
   }
 }

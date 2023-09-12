@@ -72,10 +72,11 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
       List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
       Offset prevPoint = linkPoints[jointIndex - 1];
       Offset nextPoint = linkPoints[jointIndex + 1];
-      Offset newPoint = linkPoints[jointIndex];
+      //Offset newPoint = linkPoints[jointIndex];
       Offset newJointPosition = Offset(prevPoint.dx, nextPoint.dy);
 
       canvasWriter.model.setLinkMiddlePointPosition(linkId, newJointPosition, jointIndex);
+      canvasWriter.model.updateLink(linkId);
     }
 
     lastFocalPoint = details.localFocalPoint;

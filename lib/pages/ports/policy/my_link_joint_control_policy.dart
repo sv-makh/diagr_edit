@@ -77,7 +77,7 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
   @override
   onLinkJointScaleEnd(int jointIndex, String linkId, ScaleEndDetails details) {
     LinkData linkData = canvasReader.model.getLink(linkId);
-    print('onLinkJointScaleEnd points=${linkData.linkPoints.length}');
+    //print('onLinkJointScaleEnd points=${linkData.linkPoints.length}');
 
     rightAngleZoneUpdate(jointIndex, linkId);
   }

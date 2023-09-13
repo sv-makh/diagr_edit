@@ -10,8 +10,6 @@ mixin MyLinkControlPolicy
     canvasWriter.model.hideAllLinkJoints();
     canvasWriter.model.showLinkJoints(linkId);
 
-    //int? segmentIndex = canvasReader.model.determineLinkSegmentIndex(linkId, details.localPosition);
-    //print('segment $segmentIndex');
   }
 
   var _segmentIndex;
@@ -25,32 +23,13 @@ mixin MyLinkControlPolicy
     _segmentIndex = canvasReader.model
         .determineLinkSegmentIndex(linkId, details.localFocalPoint);
     if (_segmentIndex != null) {
-      LinkData linkData = canvasReader.model.getLink(linkId);
-      List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
-
-      if ((_segmentIndex >= 2) && (linkPoints.length - _segmentIndex >= 2)) {
-        if (linkPoints[_segmentIndex - 1].dy == linkPoints[_segmentIndex].dy) {
-          if ((linkPoints[_segmentIndex - 2].dx == linkPoints[_segmentIndex - 1].dx) &&
-              (linkPoints[_segmentIndex].dx == linkPoints[_segmentIndex + 1].dx)) {
-            _segmentVerticalMove = true;
-            print('DY RECT');
-          }
-        } else if (linkPoints[_segmentIndex - 1].dx == linkPoints[_segmentIndex].dx) {
-          if ((linkPoints[_segmentIndex - 2].dy == linkPoints[_segmentIndex - 1].dy) &&
-              (linkPoints[_segmentIndex].dy == linkPoints[_segmentIndex + 1].dy)) {
-            _segmentHorisontalMove = true;
-            print('DX RECT');
-          }
-        }
-        print('RECT');
-      }
+      _calculateSegmentMoveFlags(linkId);
 
       if (!_segmentVerticalMove && !_segmentHorisontalMove) {
       canvasWriter.model.insertLinkMiddlePoint(
           linkId, details.localFocalPoint, _segmentIndex);
       canvasWriter.model.updateLink(linkId);}
     }
-    print('onLinkScaleStart');
   }
 
   @override
@@ -63,29 +42,51 @@ mixin MyLinkControlPolicy
       canvasWriter.model.updateLink(linkId);
 
       rightAngleZoneStumble(_segmentIndex, linkId, details.localFocalPoint);
-      } else {
-        Offset focalPoint = canvasReader.state.fromCanvasCoordinates(details.localFocalPoint);
-        List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
-        Offset segmentStart = Offset(0, 0);
-        Offset segmentEnd = Offset(0, 0);
-        if (_segmentVerticalMove) {
-          segmentStart = Offset(linkPoints[_segmentIndex - 1].dx, focalPoint.dy);
-          segmentEnd = Offset(linkPoints[_segmentIndex].dx, focalPoint.dy);
-        } else if (_segmentHorisontalMove) {
-          segmentStart = Offset(focalPoint.dx, linkPoints[_segmentIndex - 1].dy);
-          segmentEnd = Offset(focalPoint.dx, linkPoints[_segmentIndex].dy);
-        }
-        segmentStart = canvasReader.state.toCanvasCoordinates(segmentStart);
-        segmentEnd = canvasReader.state.toCanvasCoordinates(segmentEnd);
 
-        canvasWriter.model.setLinkMiddlePointPosition(
-            linkId, segmentStart, _segmentIndex - 1);
-        canvasWriter.model.setLinkMiddlePointPosition(
-            linkId, segmentEnd, _segmentIndex);
-        canvasWriter.model.updateLink(linkId);
+      } else {
+        _segmentMove(linkId, details);
       }
     }
-    //print('onLinkScaleUpdate');
+  }
+
+  void _calculateSegmentMoveFlags(String linkId) {
+    List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
+
+    if ((_segmentIndex >= 2) && (linkPoints.length - _segmentIndex >= 2)) {
+      if (linkPoints[_segmentIndex - 1].dy == linkPoints[_segmentIndex].dy) {
+        if ((linkPoints[_segmentIndex - 2].dx == linkPoints[_segmentIndex - 1].dx) &&
+            (linkPoints[_segmentIndex].dx == linkPoints[_segmentIndex + 1].dx)) {
+          _segmentVerticalMove = true;
+        }
+      } else if (linkPoints[_segmentIndex - 1].dx == linkPoints[_segmentIndex].dx) {
+        if ((linkPoints[_segmentIndex - 2].dy == linkPoints[_segmentIndex - 1].dy) &&
+            (linkPoints[_segmentIndex].dy == linkPoints[_segmentIndex + 1].dy)) {
+          _segmentHorisontalMove = true;
+        }
+      }
+    }
+  }
+
+  void _segmentMove(String linkId, ScaleUpdateDetails details) {
+    Offset focalPoint = canvasReader.state.fromCanvasCoordinates(details.localFocalPoint);
+    List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
+    Offset segmentStart = const Offset(0, 0);
+    Offset segmentEnd = const Offset(0, 0);
+    if (_segmentVerticalMove) {
+      segmentStart = Offset(linkPoints[_segmentIndex - 1].dx, focalPoint.dy);
+      segmentEnd = Offset(linkPoints[_segmentIndex].dx, focalPoint.dy);
+    } else if (_segmentHorisontalMove) {
+      segmentStart = Offset(focalPoint.dx, linkPoints[_segmentIndex - 1].dy);
+      segmentEnd = Offset(focalPoint.dx, linkPoints[_segmentIndex].dy);
+    }
+    segmentStart = canvasReader.state.toCanvasCoordinates(segmentStart);
+    segmentEnd = canvasReader.state.toCanvasCoordinates(segmentEnd);
+
+    canvasWriter.model.setLinkMiddlePointPosition(
+        linkId, segmentStart, _segmentIndex - 1);
+    canvasWriter.model.setLinkMiddlePointPosition(
+        linkId, segmentEnd, _segmentIndex);
+    canvasWriter.model.updateLink(linkId);
   }
 
   @override

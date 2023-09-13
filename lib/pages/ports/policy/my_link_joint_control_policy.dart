@@ -31,6 +31,8 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
   }
 
   void rightAngleZoneStumble(int jointIndex, String linkId, Offset currentPoint) {
+    currentPoint = canvasReader.state.fromCanvasCoordinates(currentPoint);
+
     LinkData linkData = canvasReader.model.getLink(linkId);
     List<Offset> linkPoints = linkData.linkPoints;
     Offset prevPoint = linkPoints[jointIndex - 1];
@@ -63,6 +65,8 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
       } else {
         newPoint = Offset(nextPoint.dx, prevPoint.dy);
       }
+
+      newPoint = canvasReader.state.toCanvasCoordinates(newPoint);
 
       canvasWriter.model.setLinkMiddlePointPosition(linkId, newPoint, jointIndex);
     }

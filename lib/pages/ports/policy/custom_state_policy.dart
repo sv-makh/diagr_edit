@@ -57,8 +57,13 @@ mixin CustomStatePolicy implements PolicySet {
   }
 
   deleteAllComponents() {
+    selectedComponentId = null;
+    selectedLinkId = null;
+    selectedPortId = null;
     canvasWriter.model.removeAllLinks();
     canvasWriter.model.removeAllComponents();
+    arePortsVisible = true;
+
   }
 
   String? selectedPortId;

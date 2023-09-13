@@ -64,16 +64,20 @@ mixin MyLinkControlPolicy
 
       rightAngleZoneStumble(_segmentIndex, linkId, details.localFocalPoint);
       } else {
+        Offset focalPoint = canvasReader.state.fromCanvasCoordinates(details.localFocalPoint);
         List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
         Offset segmentStart = Offset(0, 0);
         Offset segmentEnd = Offset(0, 0);
         if (_segmentVerticalMove) {
-          segmentStart = Offset(linkPoints[_segmentIndex - 1].dx, details.localFocalPoint.dy);
-          segmentEnd = Offset(linkPoints[_segmentIndex].dx, details.localFocalPoint.dy);
+          segmentStart = Offset(linkPoints[_segmentIndex - 1].dx, focalPoint.dy);
+          segmentEnd = Offset(linkPoints[_segmentIndex].dx, focalPoint.dy);
         } else if (_segmentHorisontalMove) {
-          segmentStart = Offset(details.localFocalPoint.dx, linkPoints[_segmentIndex - 1].dy);
-          segmentEnd = Offset(details.localFocalPoint.dx, linkPoints[_segmentIndex].dy);
+          segmentStart = Offset(focalPoint.dx, linkPoints[_segmentIndex - 1].dy);
+          segmentEnd = Offset(focalPoint.dx, linkPoints[_segmentIndex].dy);
         }
+        segmentStart = canvasReader.state.toCanvasCoordinates(segmentStart);
+        segmentEnd = canvasReader.state.toCanvasCoordinates(segmentEnd);
+
         canvasWriter.model.setLinkMiddlePointPosition(
             linkId, segmentStart, _segmentIndex - 1);
         canvasWriter.model.setLinkMiddlePointPosition(

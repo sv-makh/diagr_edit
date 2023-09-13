@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
   Offset? lastFocalPoint;
+  double parallelToAxisDelta = 10;
 
   @override
   onComponentTap(String componentId) {
@@ -56,9 +57,30 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
     } else if (component.type == 'port') {
       canvasWriter.model
           .moveComponentWithChildren(component.parentId!, positionDelta);
-      //connections.addAll(canvasReader.model.getComponent(component.parentId!).connections);
+
+      var parent = canvasReader.model.getComponent(component.parentId!);
+      for (var portId in parent.childrenIds) {
+        connections.addAll(canvasReader.model.getComponent(portId).connections);
+      }
     }
-    print('connections ${connections.map((e) => e.connectionId)}');
+
+    for (var connection in connections) {
+      String linkId = connection.connectionId;
+      LinkData link = canvasReader.model.getLink(linkId);
+
+      Offset firstPoint = Offset(0, 0);
+      Offset secondPoint = Offset(0, 0);
+      if (connection is ConnectionOut) {
+        firstPoint = link.linkPoints[0];
+        secondPoint = link.linkPoints[1];
+      } else {
+        firstPoint = link.linkPoints.last;
+        secondPoint = link.linkPoints[link.linkPoints.length - 2];
+      }
+
+      if ((firstPoint.dy - secondPoint.dy).abs() < parallelToAxisDelta) {}
+    }
+    //print('connections ${connections.map((e) => e.connectionId)}');
 
 /*    int jointIndex = 1;
     for (var connection in connectionsToRebuild) {

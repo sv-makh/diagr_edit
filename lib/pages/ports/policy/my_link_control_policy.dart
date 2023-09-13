@@ -24,6 +24,22 @@ mixin MyLinkControlPolicy
         .determineLinkSegmentIndex(linkId, details.localFocalPoint);
     if (_segmentIndex != null) {
       _calculateSegmentMoveFlags(linkId);
+      LinkData linkData = canvasReader.model.getLink(linkId);
+      List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
+
+      if ((_segmentIndex >= 2) && (linkPoints.length - _segmentIndex >= 2)) {
+        if (linkPoints[_segmentIndex - 1].dy == linkPoints[_segmentIndex].dy) {
+          if ((linkPoints[_segmentIndex - 2].dx == linkPoints[_segmentIndex - 1].dx) &&
+              (linkPoints[_segmentIndex].dx == linkPoints[_segmentIndex + 1].dx)) {
+            _segmentVerticalMove = true;
+          }
+        } else if (linkPoints[_segmentIndex - 1].dx == linkPoints[_segmentIndex].dx) {
+          if ((linkPoints[_segmentIndex - 2].dy == linkPoints[_segmentIndex - 1].dy) &&
+              (linkPoints[_segmentIndex].dy == linkPoints[_segmentIndex + 1].dy)) {
+            _segmentHorisontalMove = true;
+          }
+        }
+      }
 
       if (!_segmentVerticalMove && !_segmentHorisontalMove) {
       canvasWriter.model.insertLinkMiddlePoint(

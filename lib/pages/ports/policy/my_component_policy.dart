@@ -47,17 +47,19 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 
     var component = canvasReader.model.getComponent(componentId);
 
-    //List<Connection> connectionsToRebuild = [];
+    List<Connection> connections = [];
     if (component.type != 'port') {
       canvasWriter.model.moveComponentWithChildren(componentId, positionDelta);
-/*      for (var portId in component.childrenIds) {
-        connectionsToRebuild.addAll(canvasReader.model.getComponent(portId).connections);
-      }*/
+      for (var portId in component.childrenIds) {
+        connections.addAll(canvasReader.model.getComponent(portId).connections);
+      }
     } else if (component.type == 'port') {
       canvasWriter.model
           .moveComponentWithChildren(component.parentId!, positionDelta);
-      //connectionsToRebuild.addAll(canvasReader.model.getComponent(component.parentId!).connections);
+      //connections.addAll(canvasReader.model.getComponent(component.parentId!).connections);
     }
+    print('connections ${connections.map((e) => e.connectionId)}');
+
 /*    int jointIndex = 1;
     for (var connection in connectionsToRebuild) {
       String linkId = connection.connectionId;
@@ -95,7 +97,6 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
         ),
       );
       List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
-      print('connectComponents linkPonts (${linkPoints.length}): ${linkPoints[0]}, ${linkPoints[1]}');
 
       int jointIndex = 1;
       Offset sc = canvasReader.model.getComponent(sourceComponentId).position;
@@ -114,7 +115,6 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 /*      Offset newJointPosition = Offset(prevPoint.dx, nextPoint.dy);
       canvasWriter.model.setLinkMiddlePointPosition(linkId, newJointPosition, jointIndex);*/
       //canvasWriter.model.updateLink(linkId);
-      print('linkPonts after (${linkPoints.length}): ${linkPoints[0]}, ${linkPoints[1]}, ${linkPoints[2]}');
 
       return true;
     }

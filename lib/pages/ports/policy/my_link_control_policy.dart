@@ -10,8 +10,6 @@ mixin MyLinkControlPolicy
     canvasWriter.model.hideAllLinkJoints();
     canvasWriter.model.showLinkJoints(linkId);
 
-    //int? segmentIndex = canvasReader.model.determineLinkSegmentIndex(linkId, details.localPosition);
-    //print('segment $segmentIndex');
   }
 
   var _segmentIndex;
@@ -33,16 +31,13 @@ mixin MyLinkControlPolicy
           if ((linkPoints[_segmentIndex - 2].dx == linkPoints[_segmentIndex - 1].dx) &&
               (linkPoints[_segmentIndex].dx == linkPoints[_segmentIndex + 1].dx)) {
             _segmentVerticalMove = true;
-            print('DY RECT');
           }
         } else if (linkPoints[_segmentIndex - 1].dx == linkPoints[_segmentIndex].dx) {
           if ((linkPoints[_segmentIndex - 2].dy == linkPoints[_segmentIndex - 1].dy) &&
               (linkPoints[_segmentIndex].dy == linkPoints[_segmentIndex + 1].dy)) {
             _segmentHorisontalMove = true;
-            print('DX RECT');
           }
         }
-        print('RECT');
       }
 
       if (!_segmentVerticalMove && !_segmentHorisontalMove) {
@@ -50,7 +45,6 @@ mixin MyLinkControlPolicy
           linkId, details.localFocalPoint, _segmentIndex);
       canvasWriter.model.updateLink(linkId);}
     }
-    print('onLinkScaleStart');
   }
 
   @override
@@ -85,7 +79,6 @@ mixin MyLinkControlPolicy
         canvasWriter.model.updateLink(linkId);
       }
     }
-    //print('onLinkScaleUpdate');
   }
 
   @override

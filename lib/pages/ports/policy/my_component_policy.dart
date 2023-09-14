@@ -246,11 +246,12 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
       int jointIndex = 1;
       Offset sc = canvasReader.model.getComponent(sourceComponentId).position;
       Offset tc = canvasReader.model.getComponent(targetComponentId).position;
-      Offset middle = Offset(sc.dx + portSize / 2,
-          tc.dy + portSize / 2);
-
-      Offset newMiddle = canvasReader.state.toCanvasCoordinates(middle);
-      canvasWriter.model.insertLinkMiddlePoint(linkId, newMiddle, jointIndex);
+      if (((sc.dx - tc.dx).abs() > 10) && ((sc.dy - tc.dy).abs() > 10)) {
+        Offset middle = Offset(sc.dx + portSize / 2, tc.dy + portSize / 2);
+        //print('insert start middle point');
+        Offset newMiddle = canvasReader.state.toCanvasCoordinates(middle);
+        canvasWriter.model.insertLinkMiddlePoint(linkId, newMiddle, jointIndex);
+      }
 
       return true;
     }
@@ -289,7 +290,8 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
         ),
       );
       for (int i = 1; i < points.length - 1; i++) {
-        canvasWriter.model.insertLinkMiddlePoint(newLinkId, canvasReader.state.toCanvasCoordinates(points[i]), i);
+        canvasWriter.model.insertLinkMiddlePoint(
+            newLinkId, canvasReader.state.toCanvasCoordinates(points[i]), i);
         canvasWriter.model.updateLink(newLinkId);
       }
 

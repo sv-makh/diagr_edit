@@ -28,6 +28,8 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
     hideLinkOption();
   }
 
+  //проверяем, находятся ли отрезки линии, между которыми данная точка currentPoint,
+  //достаточно близко к тому, чтобы находиться под прямым углом друг к другу
   void rightAngleZoneStumble(int jointIndex, String linkId, Offset currentPoint) {
     currentPoint = canvasReader.state.fromCanvasCoordinates(currentPoint);
 
@@ -35,7 +37,6 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
     List<Offset> linkPoints = linkData.linkPoints;
     Offset prevPoint = linkPoints[jointIndex - 1];
     Offset nextPoint = linkPoints[jointIndex + 1];
-    //Offset currPoint = details.localFocalPoint;
     if ((((currentPoint.dx - prevPoint.dx).abs() < angleZoneDelta) &&
         ((currentPoint.dy - nextPoint.dy).abs() < angleZoneDelta)) ||
         (((currentPoint.dx - nextPoint.dx).abs() < angleZoneDelta) &&
@@ -50,6 +51,8 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
     }
   }
 
+  //перемещаем данную точку на линии так, чтобы примыкающие отрезки
+  //образовали прямой угол
   void rightAngleZoneUpdate(int jointIndex, String linkId) {
     LinkData linkData = canvasReader.model.getLink(linkId);
     if (inRightAngleZone) {
@@ -74,8 +77,6 @@ mixin MyLinkJointControlPolicy implements LinkJointPolicy, CustomStatePolicy {
 
   @override
   onLinkJointScaleEnd(int jointIndex, String linkId, ScaleEndDetails details) {
-    LinkData linkData = canvasReader.model.getLink(linkId);
-
     rightAngleZoneUpdate(jointIndex, linkId);
   }
 }

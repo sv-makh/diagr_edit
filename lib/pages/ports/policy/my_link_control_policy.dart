@@ -20,31 +20,16 @@ mixin MyLinkControlPolicy
   onLinkScaleStart(String linkId, ScaleStartDetails details) {
     canvasWriter.model.hideAllLinkJoints();
     canvasWriter.model.showLinkJoints(linkId);
+
     _segmentIndex = canvasReader.model
         .determineLinkSegmentIndex(linkId, details.localFocalPoint);
     if (_segmentIndex != null) {
-      _calculateSegmentMoveFlags(linkId);
-      LinkData linkData = canvasReader.model.getLink(linkId);
-      List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
-
-      if ((_segmentIndex >= 2) && (linkPoints.length - _segmentIndex >= 2)) {
-        if (linkPoints[_segmentIndex - 1].dy == linkPoints[_segmentIndex].dy) {
-          if ((linkPoints[_segmentIndex - 2].dx == linkPoints[_segmentIndex - 1].dx) &&
-              (linkPoints[_segmentIndex].dx == linkPoints[_segmentIndex + 1].dx)) {
-            _segmentVerticalMove = true;
-          }
-        } else if (linkPoints[_segmentIndex - 1].dx == linkPoints[_segmentIndex].dx) {
-          if ((linkPoints[_segmentIndex - 2].dy == linkPoints[_segmentIndex - 1].dy) &&
-              (linkPoints[_segmentIndex].dy == linkPoints[_segmentIndex + 1].dy)) {
-            _segmentHorisontalMove = true;
-          }
-        }
-      }
+      _calculateSegmentMoveFlags(linkId);//_checkForSegmentPosition(linkId, details);
 
       if (!_segmentVerticalMove && !_segmentHorisontalMove) {
-      canvasWriter.model.insertLinkMiddlePoint(
-          linkId, details.localFocalPoint, _segmentIndex);
-      canvasWriter.model.updateLink(linkId);}
+        canvasWriter.model.insertLinkMiddlePoint(
+            linkId, details.localFocalPoint, _segmentIndex);
+        canvasWriter.model.updateLink(linkId);}
     }
   }
 
@@ -65,9 +50,13 @@ mixin MyLinkControlPolicy
     }
   }
 
+  //проверяем, находится ли данный отрезок линии между двумя другими,
+  //параллельными друг другу и расположенными перпендикулярно данному отрезку
+  //проверка осуществляется через анализ координат концов этих трёх отрезков
   void _calculateSegmentMoveFlags(String linkId) {
     List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
 
+    //первый if - находится ли данный отрезок линии между двумя другими
     if ((_segmentIndex >= 2) && (linkPoints.length - _segmentIndex >= 2)) {
       if (linkPoints[_segmentIndex - 1].dy == linkPoints[_segmentIndex].dy) {
         if ((linkPoints[_segmentIndex - 2].dx == linkPoints[_segmentIndex - 1].dx) &&
@@ -83,6 +72,9 @@ mixin MyLinkControlPolicy
     }
   }
 
+  //передвижение отрезка, находящегося между двумя параллельными отрезками линии
+  //и перпендикулярного им,
+  //т.е. перемещение его концов
   void _segmentMove(String linkId, ScaleUpdateDetails details) {
     Offset focalPoint = canvasReader.state.fromCanvasCoordinates(details.localFocalPoint);
     List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;

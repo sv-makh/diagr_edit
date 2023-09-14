@@ -97,77 +97,90 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 
   @override
   onComponentScaleEnd(String componentId, ScaleEndDetails details) {
-    var component = canvasReader.model.getComponent(componentId);
     if (inParallelToAxisZone) {
-      double? dxToCompare;
-      double? dyToCompare;
-      double? dxToAlign;
-      double? dyToAlign;
-
-      for (var connection in _allComponentConnections(component)) {
-        String linkId = connection.connectionId;
-        LinkData linkData = canvasReader.model.getLink(linkId);
-
-        Offset firstPoint = const Offset(0, 0);
-        Offset secondPoint = const Offset(0, 0);
-        if (connection is ConnectionOut) {
-          firstPoint = linkData.linkPoints[0];
-          secondPoint = linkData.linkPoints[1];
-        } else {
-          firstPoint = linkData.linkPoints.last;
-          secondPoint = linkData.linkPoints[linkData.linkPoints.length - 2];
-        }
-
-        if ((firstPoint.dy - secondPoint.dy).abs() < parallelToAxisDelta) {
-          if ((dyToCompare == null) ||
-              ((dyToCompare != null) && (firstPoint.dy > dyToCompare))) {
-            dyToCompare = firstPoint.dy;
-            dyToAlign = secondPoint.dy;
-          }
-        } else if ((firstPoint.dx - secondPoint.dx).abs() <
-            parallelToAxisDelta) {
-          if ((dxToCompare == null) ||
-              ((dxToCompare != null) && (firstPoint.dx > dxToCompare))) {
-            dxToCompare = firstPoint.dx;
-            dxToAlign = secondPoint.dx;
-          }
-        }
-
-        linkData.linkStyle.color = Colors.black;
-        linkData.updateLink();
-      }
-
-      double dy = 0;
-      double dx = 0;
-      if (dyToCompare != null) {
-        dy = dyToAlign! - dyToCompare;
-      }
-      if (dxToCompare != null) {
-        dx = dxToAlign! - dxToCompare;
-      }
-      Offset positionDelta = Offset(dx, dy);
-      Offset componentPosition = component.position;
-      if (component.type != 'port') {
-        for (var portId in component.childrenIds) {
-          var portPosition = canvasReader.model.getComponent(portId).position;
-          canvasWriter.model
-              .setComponentPosition(portId, portPosition + positionDelta);
-        }
-        canvasWriter.model.setComponentPosition(
-            componentId, componentPosition + positionDelta);
-      } else if (component.type == 'port') {
-        var parent = canvasReader.model.getComponent(component.parentId!);
-        for (var portId in parent.childrenIds) {
-          var portPosition = canvasReader.model.getComponent(portId).position;
-          canvasWriter.model
-              .setComponentPosition(portId, portPosition + positionDelta);
-        }
-        canvasWriter.model.setComponentPosition(
-            component.parentId!, parent.position + positionDelta);
-      }
+      moveComponentToAxisAlign(componentId);
     }
   }
 
+  void moveComponentToAxisAlign(String componentId) {
+    double? dxToCompare;
+    double? dyToCompare;
+    double? dxToAlign;
+    double? dyToAlign;
+    var component = canvasReader.model.getComponent(componentId);
+
+    for (var connection in _allComponentConnections(component)) {
+      String linkId = connection.connectionId;
+      LinkData linkData = canvasReader.model.getLink(linkId);
+
+      //первая точка - соединение линии с компонентом
+      //вторая точка - конец отрезка линии, который примыкает к компоненту
+      Offset firstPoint = const Offset(0, 0);
+      Offset secondPoint = const Offset(0, 0);
+      if (connection is ConnectionOut) {
+        firstPoint = linkData.linkPoints[0];
+        secondPoint = linkData.linkPoints[1];
+      } else {
+        firstPoint = linkData.linkPoints.last;
+        secondPoint = linkData.linkPoints[linkData.linkPoints.length - 2];
+      }
+
+      //if - проверка, близка ли данная линия к горизонтали
+      //else if - проверка, близка ли данная линия к вертикали
+      if ((firstPoint.dy - secondPoint.dy).abs() < parallelToAxisDelta) {
+        if ((dyToCompare == null) ||
+            ((dyToCompare != null) && (firstPoint.dy > dyToCompare))) {
+          dyToCompare = firstPoint.dy;
+          dyToAlign = secondPoint.dy;
+        }
+      } else if ((firstPoint.dx - secondPoint.dx).abs() <
+          parallelToAxisDelta) {
+        if ((dxToCompare == null) ||
+            ((dxToCompare != null) && (firstPoint.dx > dxToCompare))) {
+          dxToCompare = firstPoint.dx;
+          dxToAlign = secondPoint.dx;
+        }
+      }
+
+      linkData.linkStyle.color = Colors.black;
+      linkData.updateLink();
+    }
+
+    //dx, dy - расстояние, на которое надо сдвинуть компонент
+    // для выравнивания линий
+    double dy = 0;
+    double dx = 0;
+    if (dyToCompare != null) {
+      dy = dyToAlign! - dyToCompare;
+    }
+    if (dxToCompare != null) {
+      dx = dxToAlign! - dxToCompare;
+    }
+    //вектор сдвига
+    Offset positionDelta = Offset(dx, dy);
+    Offset componentPosition = component.position;
+    //помещаем компонент и все его порты в новое место
+    if (component.type != 'port') {
+      for (var portId in component.childrenIds) {
+        var portPosition = canvasReader.model.getComponent(portId).position;
+        canvasWriter.model
+            .setComponentPosition(portId, portPosition + positionDelta);
+      }
+      canvasWriter.model.setComponentPosition(
+          componentId, componentPosition + positionDelta);
+    } else if (component.type == 'port') {
+      var parent = canvasReader.model.getComponent(component.parentId!);
+      for (var portId in parent.childrenIds) {
+        var portPosition = canvasReader.model.getComponent(portId).position;
+        canvasWriter.model
+            .setComponentPosition(portId, portPosition + positionDelta);
+      }
+      canvasWriter.model.setComponentPosition(
+          component.parentId!, parent.position + positionDelta);
+    }
+  }
+
+  //все соединения для компонента с портами (соединения выходят только из портов)
   List<Connection> _allComponentConnections(ComponentData component) {
     List<Connection> connections = [];
     if (component.type != 'port') {

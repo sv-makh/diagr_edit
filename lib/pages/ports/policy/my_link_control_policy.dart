@@ -2,7 +2,7 @@ import 'package:diagram_editor/diagram_editor.dart';
 import 'package:flutter/material.dart';
 
 import 'my_link_joint_control_policy.dart';
-
+//lines difference
 mixin MyLinkControlPolicy
     implements LinkControlPolicy, MyLinkJointControlPolicy {
   @override

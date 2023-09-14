@@ -131,7 +131,7 @@ mixin CustomStatePolicy implements PolicySet {
     selectedPortId = portId;
 
     canvasReader.model.getAllComponents().values.forEach((port) {
-      if (canConnectThesePorts(portId, port.id)) {
+      if (canConnectThesePorts(portId, port.id) || canShift(portId, port.id)){
         (port.data as PortData).setPortState(PortState.highlighted);
         port.updateComponent();
       }

@@ -61,13 +61,20 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
           .moveComponentWithChildren(component.parentId!, positionDelta);
     }
 
+    checkForParallelToAxis(component);
+
+    lastFocalPoint = details.localFocalPoint;
+  }
+
+  void checkForParallelToAxis(ComponentData component) {
     inParallelToAxisZone = false;
+
     for (var connection in _allComponentConnections(component)) {
       String linkId = connection.connectionId;
       LinkData linkData = canvasReader.model.getLink(linkId);
 
-      Offset firstPoint = Offset(0, 0);
-      Offset secondPoint = Offset(0, 0);
+      Offset firstPoint = const Offset(0, 0);
+      Offset secondPoint = const Offset(0, 0);
       if (connection is ConnectionOut) {
         firstPoint = linkData.linkPoints[0];
         secondPoint = linkData.linkPoints[1];
@@ -79,42 +86,13 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
       if (((firstPoint.dy - secondPoint.dy).abs() < parallelToAxisDelta) ||
           (((firstPoint.dx - secondPoint.dx).abs()) < parallelToAxisDelta)) {
         inParallelToAxisZone = true;
-        //print('inParallelToAxisZone = true');
-        //parallelToAxisLinks.add(linkId);
         linkData.linkStyle.color = Colors.blue;
         linkData.updateLink();
       } else {
-        //inParallelToAxisZone = false;
-        //print('inParallelToAxisZone = false');
-        //parallelToAxisLinks.remove(linkId);
         linkData.linkStyle.color = Colors.black;
         linkData.updateLink();
       }
     }
-    //print('connections ${connections.map((e) => e.connectionId)}');
-
-/*    int jointIndex = 1;
-    for (var connection in connectionsToRebuild) {
-      String linkId = connection.connectionId;
-
-*/ /*      String scId = canvasReader.model.getLink(linkId).sourceComponentId;
-      Offset sc = canvasReader.model.getComponent(scId).position;
-      String tcId = canvasReader.model.getLink(linkId).targetComponentId;
-      Offset tc = canvasReader.model.getComponent(tcId).position;
-
-      Offset newJointPosition = Offset(sc.dx + portSize/2, tc.dy + portSize/2);*/ /*
-
-      List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
-      Offset prevPoint = linkPoints[jointIndex - 1];
-      Offset nextPoint = linkPoints[jointIndex + 1];
-      //Offset newPoint = linkPoints[jointIndex];
-      Offset newJointPosition = Offset(prevPoint.dx, nextPoint.dy);
-
-      canvasWriter.model.setLinkMiddlePointPosition(linkId, newJointPosition, jointIndex);
-      canvasWriter.model.updateLink(linkId);
-    }*/
-
-    lastFocalPoint = details.localFocalPoint;
   }
 
   @override
@@ -125,17 +103,13 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
       double? dyToCompare;
       double? dxToAlign;
       double? dyToAlign;
-      String linkToYAlign = '';
-      String linkToXAlign = '';
-      List<Connection> linksToYAlign = [];
-      List<Connection> linksToXAlign = [];
 
       for (var connection in _allComponentConnections(component)) {
         String linkId = connection.connectionId;
         LinkData linkData = canvasReader.model.getLink(linkId);
 
-        Offset firstPoint = Offset(0, 0);
-        Offset secondPoint = Offset(0, 0);
+        Offset firstPoint = const Offset(0, 0);
+        Offset secondPoint = const Offset(0, 0);
         if (connection is ConnectionOut) {
           firstPoint = linkData.linkPoints[0];
           secondPoint = linkData.linkPoints[1];
@@ -144,54 +118,34 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
           secondPoint = linkData.linkPoints[linkData.linkPoints.length - 2];
         }
 
-        //print('check connection');
         if ((firstPoint.dy - secondPoint.dy).abs() < parallelToAxisDelta) {
-          //print('DY firstPoint = $firstPoint secondPoint = $secondPoint');
           if ((dyToCompare == null) ||
               ((dyToCompare != null) && (firstPoint.dy > dyToCompare))) {
             dyToCompare = firstPoint.dy;
             dyToAlign = secondPoint.dy;
-            linkToYAlign = linkId;
           }
-          //linksToYAlign.add(linkId);
         } else if ((firstPoint.dx - secondPoint.dx).abs() <
             parallelToAxisDelta) {
-          //print('DX firstPoint = $firstPoint secondPoint = $secondPoint');
           if ((dxToCompare == null) ||
               ((dxToCompare != null) && (firstPoint.dx > dxToCompare))) {
             dxToCompare = firstPoint.dx;
             dxToAlign = secondPoint.dx;
-            linkToXAlign = linkId;
           }
-          //linksToXAlign.add(linkId);
         }
 
         linkData.linkStyle.color = Colors.black;
         linkData.updateLink();
       }
 
-      //Offset positionDelta = const Offset(0, 0);
       double dy = 0;
       double dx = 0;
       if (dyToCompare != null) {
-        //print('dyToCompare = $dyToCompare dyToAlign = $dyToAlign');
         dy = dyToAlign! - dyToCompare;
-        //positionDelta = Offset(0, dyToAlign! - dyToCompare);//lastFocalPoint! + Offset(0, dyToAlign! - dyToCompare);
       }
       if (dxToCompare != null) {
-        //print('dxToCompare = $dxToCompare dxToAlign = $dxToAlign');
         dx = dxToAlign! - dxToCompare;
-        //positionDelta = Offset(dxToAlign! - dxToCompare, 0);//lastFocalPoint! + Offset(dxToAlign! - dxToCompare, 0);
       }
       Offset positionDelta = Offset(dx, dy);
-      //print(
-      //    'positionDelta = $positionDelta / ${canvasReader.state.fromCanvasCoordinates(positionDelta)}');
-/*      if (component.type != 'port') {
-        canvasWriter.model.moveComponentWithChildren(componentId, positionDelta);
-      } else if (component.type == 'port') {
-        canvasWriter.model
-            .moveComponentWithChildren(component.parentId!, positionDelta);
-      }*/
       Offset componentPosition = component.position;
       if (component.type != 'port') {
         for (var portId in component.childrenIds) {
@@ -246,9 +200,9 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
       int jointIndex = 1;
       Offset sc = canvasReader.model.getComponent(sourceComponentId).position;
       Offset tc = canvasReader.model.getComponent(targetComponentId).position;
+      //излом создаётся только если разница в координатах достаточно большая
       if (((sc.dx - tc.dx).abs() > 10) && ((sc.dy - tc.dy).abs() > 10)) {
         Offset middle = Offset(sc.dx + portSize / 2, tc.dy + portSize / 2);
-        //print('insert start middle point');
         Offset newMiddle = canvasReader.state.toCanvasCoordinates(middle);
         canvasWriter.model.insertLinkMiddlePoint(linkId, newMiddle, jointIndex);
       }
@@ -259,10 +213,8 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 
   bool shiftConnection(String? sourceComponentId, String? targetComponentId) {
     if (!canShift(sourceComponentId, targetComponentId)) {
-      //print('shiftConnection false');
       return false;
     } else {
-      //print('shiftConnection true');
       Connection connection =
           canvasReader.model.getComponent(sourceComponentId!).connections.first;
       String linkId = connection.connectionId;

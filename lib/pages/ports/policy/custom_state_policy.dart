@@ -63,7 +63,6 @@ mixin CustomStatePolicy implements PolicySet {
     canvasWriter.model.removeAllLinks();
     canvasWriter.model.removeAllComponents();
     arePortsVisible = true;
-
   }
 
   String? selectedPortId;
@@ -97,7 +96,32 @@ mixin CustomStatePolicy implements PolicySet {
       return false;
     }
 
+    if (port1.connections.isNotEmpty || port2.connections.isNotEmpty) {
+      return false;
+    }
+
     return true;
+  }
+
+  bool canShift(String? sourcePortId, String? targetPortId) {
+    if (sourcePortId == null || targetPortId == null) {
+      print('canShift null');
+      return false;
+    }
+
+    var sourcePort = canvasReader.model.getComponent(sourcePortId);
+    var targetPort = canvasReader.model.getComponent(targetPortId);
+
+    if ((sourcePort.parentId == targetPort.parentId) &&
+        sourcePort.connections.isNotEmpty &&
+        targetPort.connections.isEmpty) {
+      print('canShift true');
+      return true;
+    }
+
+    print('canShift false');
+
+    return false;
   }
 
   selectPort(String portId) {
@@ -233,10 +257,14 @@ mixin CustomStatePolicy implements PolicySet {
             .add(_getPortData(Alignment(_circlePoint, -_circlePoint)));
       case 'parallelGatewayComponent':
       case 'exclusiveGatewayComponent':
-        portComponent.data.portData.add(_getPortData(const Alignment(0.5, 0.5)));
-        portComponent.data.portData.add(_getPortData(const Alignment(-0.5, -0.5)));
-        portComponent.data.portData.add(_getPortData(const Alignment(-0.5, 0.5)));
-        portComponent.data.portData.add(_getPortData(const Alignment(0.5, -0.5)));
+        portComponent.data.portData
+            .add(_getPortData(const Alignment(0.5, 0.5)));
+        portComponent.data.portData
+            .add(_getPortData(const Alignment(-0.5, -0.5)));
+        portComponent.data.portData
+            .add(_getPortData(const Alignment(-0.5, 0.5)));
+        portComponent.data.portData
+            .add(_getPortData(const Alignment(0.5, -0.5)));
       case 'userTaskComponent':
       case 'textAnnotationComponent':
       case 'serviceTaskComponent':

@@ -17,8 +17,12 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 
     if (component.type == 'port') {
       bool connected = connectComponents(selectedPortId, componentId);
-      deselectAllPorts();
+      bool shiftedConnection = false;
       if (!connected) {
+        shiftedConnection = shiftConnection(selectedPortId, componentId);
+      }
+      deselectAllPorts();
+      if (!connected && !shiftedConnection) {
         selectPort(componentId);
       }
     } else {
@@ -139,7 +143,8 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 
         if ((firstPoint.dy - secondPoint.dy).abs() < parallelToAxisDelta) {
           print('DY firstPoint = $firstPoint secondPoint = $secondPoint');
-          if ((dyToCompare == null) || ((dyToCompare != null) && (firstPoint.dy > dyToCompare))) {
+          if ((dyToCompare == null) ||
+              ((dyToCompare != null) && (firstPoint.dy > dyToCompare))) {
             dyToCompare = firstPoint.dy;
             dyToAlign = secondPoint.dy;
             linkToYAlign = linkId;
@@ -148,7 +153,8 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
         } else if ((firstPoint.dx - secondPoint.dx).abs() <
             parallelToAxisDelta) {
           print('DX firstPoint = $firstPoint secondPoint = $secondPoint');
-          if ((dxToCompare == null) || ((dxToCompare != null) && (firstPoint.dx > dxToCompare))) {
+          if ((dxToCompare == null) ||
+              ((dxToCompare != null) && (firstPoint.dx > dxToCompare))) {
             dxToCompare = firstPoint.dx;
             dxToAlign = secondPoint.dx;
             linkToXAlign = linkId;
@@ -174,29 +180,33 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
         //positionDelta = Offset(dxToAlign! - dxToCompare, 0);//lastFocalPoint! + Offset(dxToAlign! - dxToCompare, 0);
       }
       Offset positionDelta = Offset(dx, dy);
-      print('positionDelta = $positionDelta / ${canvasReader.state.fromCanvasCoordinates(positionDelta)}');
+      print(
+          'positionDelta = $positionDelta / ${canvasReader.state.fromCanvasCoordinates(positionDelta)}');
 /*      if (component.type != 'port') {
         canvasWriter.model.moveComponentWithChildren(componentId, positionDelta);
       } else if (component.type == 'port') {
         canvasWriter.model
             .moveComponentWithChildren(component.parentId!, positionDelta);
       }*/
-    Offset componentPosition = component.position;
+      Offset componentPosition = component.position;
       if (component.type != 'port') {
         for (var portId in component.childrenIds) {
           var portPosition = canvasReader.model.getComponent(portId).position;
-          canvasWriter.model.setComponentPosition(portId, portPosition + positionDelta);
+          canvasWriter.model
+              .setComponentPosition(portId, portPosition + positionDelta);
         }
-        canvasWriter.model.setComponentPosition(componentId, componentPosition + positionDelta);
+        canvasWriter.model.setComponentPosition(
+            componentId, componentPosition + positionDelta);
       } else if (component.type == 'port') {
         var parent = canvasReader.model.getComponent(component.parentId!);
         for (var portId in parent.childrenIds) {
           var portPosition = canvasReader.model.getComponent(portId).position;
-          canvasWriter.model.setComponentPosition(portId, portPosition + positionDelta);
+          canvasWriter.model
+              .setComponentPosition(portId, portPosition + positionDelta);
         }
-        canvasWriter.model.setComponentPosition(component.parentId!, parent.position + positionDelta);
+        canvasWriter.model.setComponentPosition(
+            component.parentId!, parent.position + positionDelta);
       }
-
     }
   }
 
@@ -229,6 +239,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
       );
       List<Offset> linkPoints = canvasReader.model.getLink(linkId).linkPoints;
 
+      //создаём излом с прямым углом на свежесозданной линии
       int jointIndex = 1;
       Offset sc = canvasReader.model.getComponent(sourceComponentId).position;
       Offset tc = canvasReader.model.getComponent(targetComponentId).position;
@@ -247,6 +258,47 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 /*      Offset newJointPosition = Offset(prevPoint.dx, nextPoint.dy);
       canvasWriter.model.setLinkMiddlePointPosition(linkId, newJointPosition, jointIndex);*/
       //canvasWriter.model.updateLink(linkId);
+
+      return true;
+    }
+  }
+
+  bool shiftConnection(String? sourceComponentId, String? targetComponentId) {
+    if (!canShift(sourceComponentId, targetComponentId)) {
+      print('shiftConnection false');
+      return false;
+    } else {
+      print('shiftConnection true');
+      Connection connection =
+          canvasReader.model.getComponent(sourceComponentId!).connections.first;
+      String linkId = connection.connectionId;
+      LinkData linkData = canvasReader.model.getLink(linkId);
+      List<Offset> points = linkData.linkPoints;
+
+      canvasWriter.model.removeLink(linkId);
+
+      String newSource = '';
+      String newTarget = '';
+      if (connection is ConnectionOut) {
+        newSource = targetComponentId!;
+        newTarget = linkData.targetComponentId;
+      } else {
+        newSource = linkData.sourceComponentId;
+        newTarget = targetComponentId!;
+      }
+
+      String newLinkId = canvasWriter.model.connectTwoComponents(
+        sourceComponentId: newSource,
+        targetComponentId: newTarget,
+        linkStyle: LinkStyle(
+          arrowType: ArrowType.pointedArrow,
+          lineWidth: 1.5,
+        ),
+      );
+      for (int i = 1; i < points.length - 1; i++) {
+        canvasWriter.model.insertLinkMiddlePoint(newLinkId, canvasReader.state.toCanvasCoordinates(points[i]), i);
+        canvasWriter.model.updateLink(newLinkId);
+      }
 
       return true;
     }

@@ -105,7 +105,7 @@ mixin CustomStatePolicy implements PolicySet {
 
   bool canShift(String? sourcePortId, String? targetPortId) {
     if (sourcePortId == null || targetPortId == null) {
-      print('canShift null');
+      //print('canShift null');
       return false;
     }
 
@@ -115,11 +115,17 @@ mixin CustomStatePolicy implements PolicySet {
     if ((sourcePort.parentId == targetPort.parentId) &&
         sourcePort.connections.isNotEmpty &&
         targetPort.connections.isEmpty) {
-      print('canShift true');
+      //print('canShift true');
       return true;
     }
 
-    print('canShift false');
+/*    if (sourcePort.connections.isNotEmpty &&
+        targetPort.connections.isEmpty) {
+      //print('canShift true');
+      return true;
+    }*/
+
+    //print('canShift false');
 
     return false;
   }

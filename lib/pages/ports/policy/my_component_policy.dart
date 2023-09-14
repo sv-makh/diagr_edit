@@ -79,7 +79,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
       if (((firstPoint.dy - secondPoint.dy).abs() < parallelToAxisDelta) ||
           (((firstPoint.dx - secondPoint.dx).abs()) < parallelToAxisDelta)) {
         inParallelToAxisZone = true;
-        print('inParallelToAxisZone = true');
+        //print('inParallelToAxisZone = true');
         //parallelToAxisLinks.add(linkId);
         linkData.linkStyle.color = Colors.blue;
         linkData.updateLink();
@@ -144,9 +144,9 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
           secondPoint = linkData.linkPoints[linkData.linkPoints.length - 2];
         }
 
-        print('check connection');
+        //print('check connection');
         if ((firstPoint.dy - secondPoint.dy).abs() < parallelToAxisDelta) {
-          print('DY firstPoint = $firstPoint secondPoint = $secondPoint');
+          //print('DY firstPoint = $firstPoint secondPoint = $secondPoint');
           if ((dyToCompare == null) ||
               ((dyToCompare != null) && (firstPoint.dy > dyToCompare))) {
             dyToCompare = firstPoint.dy;
@@ -156,7 +156,7 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
           //linksToYAlign.add(linkId);
         } else if ((firstPoint.dx - secondPoint.dx).abs() <
             parallelToAxisDelta) {
-          print('DX firstPoint = $firstPoint secondPoint = $secondPoint');
+          //print('DX firstPoint = $firstPoint secondPoint = $secondPoint');
           if ((dxToCompare == null) ||
               ((dxToCompare != null) && (firstPoint.dx > dxToCompare))) {
             dxToCompare = firstPoint.dx;
@@ -174,18 +174,18 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
       double dy = 0;
       double dx = 0;
       if (dyToCompare != null) {
-        print('dyToCompare = $dyToCompare dyToAlign = $dyToAlign');
+        //print('dyToCompare = $dyToCompare dyToAlign = $dyToAlign');
         dy = dyToAlign! - dyToCompare;
         //positionDelta = Offset(0, dyToAlign! - dyToCompare);//lastFocalPoint! + Offset(0, dyToAlign! - dyToCompare);
       }
       if (dxToCompare != null) {
-        print('dxToCompare = $dxToCompare dxToAlign = $dxToAlign');
+        //print('dxToCompare = $dxToCompare dxToAlign = $dxToAlign');
         dx = dxToAlign! - dxToCompare;
         //positionDelta = Offset(dxToAlign! - dxToCompare, 0);//lastFocalPoint! + Offset(dxToAlign! - dxToCompare, 0);
       }
       Offset positionDelta = Offset(dx, dy);
-      print(
-          'positionDelta = $positionDelta / ${canvasReader.state.fromCanvasCoordinates(positionDelta)}');
+      //print(
+      //    'positionDelta = $positionDelta / ${canvasReader.state.fromCanvasCoordinates(positionDelta)}');
 /*      if (component.type != 'port') {
         canvasWriter.model.moveComponentWithChildren(componentId, positionDelta);
       } else if (component.type == 'port') {
@@ -259,10 +259,10 @@ mixin MyComponentPolicy implements ComponentPolicy, CustomStatePolicy {
 
   bool shiftConnection(String? sourceComponentId, String? targetComponentId) {
     if (!canShift(sourceComponentId, targetComponentId)) {
-      print('shiftConnection false');
+      //print('shiftConnection false');
       return false;
     } else {
-      print('shiftConnection true');
+      //print('shiftConnection true');
       Connection connection =
           canvasReader.model.getComponent(sourceComponentId!).connections.first;
       String linkId = connection.connectionId;
